@@ -14,7 +14,6 @@ data class UserData(
 )
 
 // Represents one study goal added by the user
-// This is the "ADD item" required by the project rubric
 data class StudyGoal(
     val id: Int,
     val title: String,        // e.g. "Learn 10 words today"
@@ -24,7 +23,6 @@ data class StudyGoal(
 
 // ── ViewModel ──────────────────────────────────────────────────
 // ONE ViewModel shared across ALL screens via AppNavigation.
-// Survives screen rotation because it lives outside the Compose tree.
 class UserViewModel : ViewModel() {
 
     // ── User info state ────────────────────────────────────────
@@ -51,9 +49,7 @@ class UserViewModel : ViewModel() {
     }
 
     // ── Goal functions ─────────────────────────────────────────
-
-    // ADD a new goal — called from AddGoalScreen
-    // The new list is then visible on GoalsScreen automatically
+    // called from AddGoalScreen
     fun addGoal(title: String, targetDays: Int) {
         val newGoal = StudyGoal(
             id         = nextGoalId++,

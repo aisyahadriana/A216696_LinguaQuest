@@ -38,6 +38,7 @@ fun MainScreen(
     onGoToProfile: () -> Unit,
     onGoToLeaderboard: () -> Unit,
     onGoToGoals: () -> Unit,
+    onGoToCalculator: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val welcomeName = viewModel.userData.userName
@@ -50,12 +51,7 @@ fun MainScreen(
                 AppHeader()
                 StatsCard()
                 if (welcomeName.isNotEmpty()) WelcomeBanner(name = welcomeName)
-
-                // ── SDG Goals Quick Card ─────────────────────────
-                // Shows how many goals the user has set.
-                // Tapping it navigates to the Goals screen.
                 SdgGoalsBanner(goalCount = goalCount, onTap = onGoToGoals)
-
                 SectionBannerCard()
                 Spacer(Modifier.height(28.dp))
                 LessonPath(onGoClick = { lessonTitle -> onGoToLesson(lessonTitle) })
@@ -69,6 +65,7 @@ fun MainScreen(
                         "Profile"     -> onGoToProfile()
                         "Leaderboard" -> onGoToLeaderboard()
                         "Goals"       -> onGoToGoals()
+                        "Calc"        -> onGoToCalculator()
                     }
                 }
             )
@@ -77,13 +74,10 @@ fun MainScreen(
 }
 
 // ── SDG Goals Banner ───────────────────────────────────────────
-// Links home screen to the Goals feature.
-// goalCount comes from ViewModel — updates automatically when goals are added.
 @Composable
 fun SdgGoalsBanner(goalCount: Int, onTap: () -> Unit) {
     Card(
-        modifier  = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)
-            .clickable { onTap() },
+        modifier  = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).clickable { onTap() },
         shape     = RoundedCornerShape(20.dp),
         colors    = CardDefaults.cardColors(containerColor = Color(0xFF0D2235)),
         border    = BorderStroke(1.dp, GreenColor.copy(alpha = 0.4f)),
@@ -93,19 +87,14 @@ fun SdgGoalsBanner(goalCount: Int, onTap: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
                 .background(Brush.horizontalGradient(listOf(Color(0xFF0D3B2E), Color(0xFF0A2A20))))
                 .padding(horizontal = 20.dp, vertical = 14.dp),
-            verticalAlignment     = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("🎯", fontSize = 28.sp)
                 Column {
                     Text("SDG 4 – Study Goals", color = GreenColor, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
-                    Text(
-                        if (goalCount == 0) "No goals yet — tap to add one!"
-                        else "$goalCount goal${if (goalCount > 1) "s" else ""} active",
-                        color   = TextWhite.copy(alpha = 0.7f),
-                        fontSize = 12.sp
-                    )
+                    Text(if (goalCount == 0) "No goals yet — tap to add one!" else "$goalCount goal${if (goalCount > 1) "s" else ""} active", color = TextWhite.copy(alpha = 0.7f), fontSize = 12.sp)
                 }
             }
             Text("→", color = GreenColor, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
@@ -117,35 +106,20 @@ fun SdgGoalsBanner(goalCount: Int, onTap: () -> Unit) {
 @Composable
 fun AppHeader() {
     Box(
-        modifier = Modifier.fillMaxWidth()
-            .background(Brush.verticalGradient(listOf(Color(0xFF0A1628), DarkBg)))
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+        modifier = Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(Color(0xFF0A1628), DarkBg))).padding(horizontal = 20.dp, vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Box(modifier = Modifier.width(220.dp).height(40.dp).clip(RoundedCornerShape(12.dp)).background(ActiveBlue.copy(alpha = 0.07f)))
         Text("LinguaQuest", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = TextWhite, letterSpacing = 3.sp)
-        Box(
-            modifier = Modifier.align(Alignment.BottomCenter).width(100.dp).height(2.dp)
-                .clip(RoundedCornerShape(1.dp))
-                .background(Brush.horizontalGradient(listOf(Color.Transparent, ActiveBlue, Color.Transparent)))
-        )
+        Box(modifier = Modifier.align(Alignment.BottomCenter).width(100.dp).height(2.dp).clip(RoundedCornerShape(1.dp)).background(Brush.horizontalGradient(listOf(Color.Transparent, ActiveBlue, Color.Transparent))))
     }
 }
 
 // ── Stats Card ─────────────────────────────────────────────────
 @Composable
 fun StatsCard() {
-    Card(
-        modifier  = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        shape     = RoundedCornerShape(32.dp),
-        colors    = CardDefaults.cardColors(containerColor = Color(0xFF0A1628)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment     = Alignment.CenterVertically
-        ) {
+    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), shape = RoundedCornerShape(32.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF0A1628)), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             StatItem("🇰🇷", "10",  TextWhite)
             StatItem("🔥",  "2",   Color(0xFFFF9800))
             StatItem("💎",  "140", Color(0xFF4DD0E1))
@@ -157,25 +131,16 @@ fun StatsCard() {
 @Composable
 fun StatItem(icon: String, value: String, color: Color) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(icon, fontSize = 20.sp)
-        Spacer(Modifier.width(4.dp))
+        Text(icon, fontSize = 20.sp); Spacer(Modifier.width(4.dp))
         Text(value, color = color, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
     }
 }
 
-// ── Section Banner Card ────────────────────────────────────────
+// ── Section Banner ─────────────────────────────────────────────
 @Composable
 fun SectionBannerCard() {
-    Card(
-        modifier  = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-        shape     = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp))
-                .background(Brush.horizontalGradient(listOf(BannerBlue, BannerDark)))
-                .padding(horizontal = 20.dp, vertical = 16.dp)
-        ) {
+    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
+        Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Brush.horizontalGradient(listOf(BannerBlue, BannerDark))).padding(horizontal = 20.dp, vertical = 16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("SECTION 2, UNIT 1", color = Color(0xFFBBDEFB), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
@@ -186,11 +151,7 @@ fun SectionBannerCard() {
                         Box(modifier = Modifier.fillMaxHeight().width(55.dp).clip(RoundedCornerShape(4.dp)).background(Color(0xFFBBDEFB)))
                     }
                 }
-                Box(
-                    modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
-                        .background(Color(0x44000000)).border(1.dp, Color(0x6664B5F6), RoundedCornerShape(12.dp)),
-                    contentAlignment = Alignment.Center
-                ) { Text("📋", fontSize = 22.sp) }
+                Box(modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp)).background(Color(0x44000000)).border(1.dp, Color(0x6664B5F6), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) { Text("📋", fontSize = 22.sp) }
             }
         }
     }
@@ -199,17 +160,8 @@ fun SectionBannerCard() {
 // ── Welcome Banner ─────────────────────────────────────────────
 @Composable
 fun WelcomeBanner(name: String) {
-    Card(
-        modifier  = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        shape     = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
-                .background(Brush.horizontalGradient(listOf(Color(0xFF0D3B2E), Color(0xFF0A4A3A))))
-                .border(1.dp, GreenColor.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
-                .padding(horizontal = 20.dp, vertical = 14.dp)
-        ) {
+    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), shape = RoundedCornerShape(16.dp), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+        Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Brush.horizontalGradient(listOf(Color(0xFF0D3B2E), Color(0xFF0A4A3A)))).border(1.dp, GreenColor.copy(alpha = 0.4f), RoundedCornerShape(16.dp)).padding(horizontal = 20.dp, vertical = 14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("🇰🇷", fontSize = 28.sp)
                 Column {
@@ -251,21 +203,13 @@ fun LessonPath(onGoClick: (String) -> Unit) {
 
 @Composable
 fun ZigzagRow(lesson: LessonNode, bubbleOnLeft: Boolean, onGoClick: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = if (bubbleOnLeft) Arrangement.Start else Arrangement.End
-    ) {
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = if (bubbleOnLeft) Arrangement.Start else Arrangement.End) {
         if (bubbleOnLeft) {
-            Spacer(Modifier.width(24.dp))
-            BubbleCircle(lesson = lesson, onGoClick = onGoClick)
-            Spacer(Modifier.width(14.dp))
+            Spacer(Modifier.width(24.dp)); BubbleCircle(lesson = lesson, onGoClick = onGoClick); Spacer(Modifier.width(14.dp))
             if (lesson.isActive) ExpandableLessonCard(lesson) else LessonLabel(lesson, alignEnd = false)
         } else {
             if (lesson.isActive) ExpandableLessonCard(lesson) else LessonLabel(lesson, alignEnd = true)
-            Spacer(Modifier.width(14.dp))
-            BubbleCircle(lesson = lesson, onGoClick = onGoClick)
-            Spacer(Modifier.width(24.dp))
+            Spacer(Modifier.width(14.dp)); BubbleCircle(lesson = lesson, onGoClick = onGoClick); Spacer(Modifier.width(24.dp))
         }
     }
 }
@@ -273,34 +217,18 @@ fun ZigzagRow(lesson: LessonNode, bubbleOnLeft: Boolean, onGoClick: () -> Unit) 
 @Composable
 fun ExpandableLessonCard(lesson: LessonNode) {
     var expanded by remember { mutableStateOf(false) }
-    Card(
-        modifier  = Modifier.width(140.dp).clickable { expanded = !expanded }
-            .animateContentSize(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)),
-        shape     = RoundedCornerShape(16.dp),
-        colors    = CardDefaults.cardColors(containerColor = Color(0xFF0D2235)),
-        border    = BorderStroke(1.dp, ActiveBlue.copy(alpha = 0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-    ) {
+    Card(modifier = Modifier.width(140.dp).clickable { expanded = !expanded }.animateContentSize(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF0D2235)), border = BorderStroke(1.dp, ActiveBlue.copy(alpha = 0.4f)), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(ActiveBlue.copy(alpha = 0.18f)).padding(horizontal = 8.dp, vertical = 3.dp)) {
-                Text(lesson.unit, color = ActiveBlue, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp)
-            }
+            Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(ActiveBlue.copy(alpha = 0.18f)).padding(horizontal = 8.dp, vertical = 3.dp)) { Text(lesson.unit, color = ActiveBlue, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp) }
             Text(lesson.topic, color = TextWhite, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 16.sp)
-            Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(GoldColor.copy(alpha = 0.15f)).padding(horizontal = 7.dp, vertical = 3.dp)) {
-                Text("⭐ +10 XP", color = GoldColor, fontSize = 9.sp, fontWeight = FontWeight.Bold)
-            }
+            Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(GoldColor.copy(alpha = 0.15f)).padding(horizontal = 7.dp, vertical = 3.dp)) { Text("⭐ +10 XP", color = GoldColor, fontSize = 9.sp, fontWeight = FontWeight.Bold) }
             if (expanded) {
-                Spacer(Modifier.height(6.dp))
-                HorizontalDivider(color = ActiveBlue.copy(alpha = 0.2f), thickness = 1.dp)
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(6.dp)); HorizontalDivider(color = ActiveBlue.copy(alpha = 0.2f), thickness = 1.dp); Spacer(Modifier.height(6.dp))
                 Text("✈️  공항 = Airport",           color = TextWhite,                    fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 Text("🗣️  어디에요? = Where is it?", color = TextWhite.copy(alpha = 0.85f), fontSize = 12.sp)
                 Text("🎫  표 = Ticket",              color = TextWhite.copy(alpha = 0.85f), fontSize = 12.sp)
                 Spacer(Modifier.height(6.dp))
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("📚", fontSize = 11.sp)
-                    Text("3 exercises  •  ~5 mins", color = TextMuted, fontSize = 10.sp)
-                }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) { Text("📚", fontSize = 11.sp); Text("3 exercises  •  ~5 mins", color = TextMuted, fontSize = 10.sp) }
                 Spacer(Modifier.height(4.dp))
                 Text("Tap GO to start! 🚀", color = GreenColor.copy(alpha = 0.8f), fontSize = 10.sp, fontWeight = FontWeight.Bold)
             }
@@ -312,32 +240,15 @@ fun ExpandableLessonCard(lesson: LessonNode) {
 fun BubbleCircle(lesson: LessonNode, onGoClick: () -> Unit) {
     Box(modifier = Modifier.size(72.dp), contentAlignment = Alignment.Center) {
         Box(modifier = Modifier.size(64.dp).offset(y = 6.dp).clip(CircleShape).background(if (lesson.isActive) ActiveShadow else LockedShadow))
-        Box(
-            modifier = Modifier.size(64.dp).clip(CircleShape)
-                .background(if (lesson.isActive) Brush.radialGradient(listOf(Color(0xFF50D8FF), ActiveBlue, Color(0xFF0A90C8))) else Brush.radialGradient(listOf(Color(0xFF1E3045), LockedFill)))
-                .border(if (lesson.isActive) 3.dp else 2.dp, if (lesson.isActive) ActiveRing else LockedRing, CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
+        Box(modifier = Modifier.size(64.dp).clip(CircleShape).background(if (lesson.isActive) Brush.radialGradient(listOf(Color(0xFF50D8FF), ActiveBlue, Color(0xFF0A90C8))) else Brush.radialGradient(listOf(Color(0xFF1E3045), LockedFill))).border(if (lesson.isActive) 3.dp else 2.dp, if (lesson.isActive) ActiveRing else LockedRing, CircleShape), contentAlignment = Alignment.Center) {
             Box(modifier = Modifier.size(20.dp).offset(x = (-11).dp, y = (-11).dp).clip(CircleShape).background(Color.White.copy(alpha = if (lesson.isActive) 0.28f else 0.07f)))
             Text(lesson.icon, fontSize = 24.sp, textAlign = TextAlign.Center)
         }
-        if (!lesson.isActive) {
-            Box(
-                modifier = Modifier.size(20.dp).align(Alignment.BottomEnd).offset(x = 2.dp, y = 2.dp)
-                    .clip(CircleShape).background(DarkBg).border(1.dp, LockedRing, CircleShape),
-                contentAlignment = Alignment.Center
-            ) { Text("🔒", fontSize = 8.sp, textAlign = TextAlign.Center) }
-        }
+        if (!lesson.isActive) { Box(modifier = Modifier.size(20.dp).align(Alignment.BottomEnd).offset(x = 2.dp, y = 2.dp).clip(CircleShape).background(DarkBg).border(1.dp, LockedRing, CircleShape), contentAlignment = Alignment.Center) { Text("🔒", fontSize = 8.sp, textAlign = TextAlign.Center) } }
         if (lesson.isActive) {
             val goInteraction = remember { MutableInteractionSource() }
             val goPressed by goInteraction.collectIsPressedAsState()
-            Box(
-                modifier = Modifier.align(Alignment.BottomCenter).offset(y = 10.dp)
-                    .scale(if (goPressed) 0.92f else 1f).clip(RoundedCornerShape(10.dp))
-                    .background(if (goPressed) GreenColor.copy(alpha = 0.75f) else GreenColor)
-                    .clickable(interactionSource = goInteraction, indication = ripple(color = Color.White)) { onGoClick() }
-                    .padding(horizontal = 10.dp, vertical = 3.dp)
-            ) { Text("GO", color = TextWhite, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold) }
+            Box(modifier = Modifier.align(Alignment.BottomCenter).offset(y = 10.dp).scale(if (goPressed) 0.92f else 1f).clip(RoundedCornerShape(10.dp)).background(if (goPressed) GreenColor.copy(alpha = 0.75f) else GreenColor).clickable(interactionSource = goInteraction, indication = ripple(color = Color.White)) { onGoClick() }.padding(horizontal = 10.dp, vertical = 3.dp)) { Text("GO", color = TextWhite, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold) }
         }
     }
 }
@@ -345,9 +256,7 @@ fun BubbleCircle(lesson: LessonNode, onGoClick: () -> Unit) {
 @Composable
 fun LessonLabel(lesson: LessonNode, alignEnd: Boolean) {
     Column(modifier = Modifier.width(110.dp), horizontalAlignment = if (alignEnd) Alignment.End else Alignment.Start) {
-        Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(LockedRing.copy(alpha = 0.12f)).padding(horizontal = 8.dp, vertical = 3.dp)) {
-            Text(lesson.unit, color = TextMuted, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp)
-        }
+        Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(LockedRing.copy(alpha = 0.12f)).padding(horizontal = 8.dp, vertical = 3.dp)) { Text(lesson.unit, color = TextMuted, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp) }
         Spacer(Modifier.height(4.dp))
         Text(lesson.topic, color = TextMuted, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, textAlign = if (alignEnd) TextAlign.End else TextAlign.Start, lineHeight = 16.sp)
     }
@@ -363,22 +272,20 @@ fun DiagonalArrow(fromLeft: Boolean, toLeft: Boolean, isActivePath: Boolean) {
     Box(modifier = Modifier.fillMaxWidth().height(90.dp)) {
         repeat(5) { i ->
             val fraction = i.toFloat() / 4f
-            Box(modifier = Modifier.offset(x = startX + (endX - startX) * fraction - 12.dp, y = (62.dp * fraction))) {
-                Text("🐾", fontSize = 22.sp, color = arrowColor, modifier = Modifier.rotate(pawAngle))
-            }
+            Box(modifier = Modifier.offset(x = startX + (endX - startX) * fraction - 12.dp, y = (62.dp * fraction))) { Text("🐾", fontSize = 22.sp, color = arrowColor, modifier = Modifier.rotate(pawAngle)) }
         }
     }
 }
 
-// ── Bottom Nav Bar ─────────────────────────────────────────────
+// ── Bottom Nav Bar — now has Calculator tab ────────────────────
 @Composable
 fun BottomNavBar(activeNav: String, onNavSelect: (String) -> Unit) {
-    Box(modifier = Modifier.fillMaxWidth().background(NavBg).padding(vertical = 10.dp, horizontal = 2.dp)) {
+    Box(modifier = Modifier.fillMaxWidth().background(NavBg).padding(vertical = 8.dp, horizontal = 2.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
             NavItem("🏠", "Home",        activeNav == "Home")        { onNavSelect("Home") }
-            NavItem("🏆", "Leaderboard", activeNav == "Leaderboard") { onNavSelect("Leaderboard") }
             NavItem("🎯", "Goals",       activeNav == "Goals")       { onNavSelect("Goals") }
-            NavItem("💬", "Chat",        activeNav == "Chat")        { onNavSelect("Chat") }
+            NavItem("🧮", "Calc",        activeNav == "Calc")        { onNavSelect("Calc") }
+            NavItem("🏆", "Leaderboard", activeNav == "Leaderboard") { onNavSelect("Leaderboard") }
             NavItem("👤", "Profile",     activeNav == "Profile")     { onNavSelect("Profile") }
         }
     }
