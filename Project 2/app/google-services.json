@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "217750594322",
+    "project_id": "linguaquest-ac660",
+    "storage_bucket": "linguaquest-ac660.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217750594322:android:f22d986967528c92cc89cb",
+        "android_client_info": {
+          "package_name": "com.example.a216696_wan_project2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUHV4_bEh1nsXvX_4tupjZCY-4Ub1aL3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
