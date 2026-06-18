@@ -27,7 +27,7 @@ class FirestoreRepository {
         return try {
             val docRef = collection.add(
                 mapOf(
-                    "korean"      to phrase.korean,
+                    "original"      to phrase.korean,
                     "translation" to phrase.translation,
                     "submittedBy" to phrase.submittedBy,
                     "targetLang"  to phrase.targetLang,
@@ -54,7 +54,7 @@ class FirestoreRepository {
                     try {
                         CommunityPhrase(
                             id          = doc.id,
-                            korean      = doc.getString("korean")      ?: "",
+                            korean      = doc.getString("original")      ?: "",
                             translation = doc.getString("translation") ?: "",
                             submittedBy = doc.getString("submittedBy") ?: "Anonymous",
                             targetLang  = doc.getString("targetLang")  ?: "ms",

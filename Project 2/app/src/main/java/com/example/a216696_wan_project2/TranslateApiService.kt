@@ -1,10 +1,6 @@
 package com.example.a216696_wan_project2
 
-// ================================================================
-// FILE: TranslateApiService.kt  (FIXED)
-// The free Google Translate endpoint returns a raw JSON array,
-// NOT an object. We use ResponseBody and parse manually.
-// ================================================================
+// The free Google Translate endpoint returns a raw JSON array
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,8 +14,7 @@ import org.json.JSONArray
 import java.util.concurrent.TimeUnit
 
 interface TranslateApiService {
-    // Returns raw ResponseBody because the response is a nested JSON array,
-    // not a JSON object — Gson cannot auto-deserialize it.
+    // Returns raw ResponseBody because the response is a nested JSON array.
     @GET("translate_a/single")
     suspend fun translateRaw(
         @Query("client") client: String = "gtx",

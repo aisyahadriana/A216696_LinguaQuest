@@ -219,9 +219,9 @@ fun CommunityPhraseCard(
 
             HorizontalDivider(color = LockedRing.copy(alpha = 0.2f))
 
-            // ── Korean original ───────────────────────────────────
+            // ── original ───────────────────────────────────
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("🇰🇷 Korean", color = TextMuted, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                Text("\uD83D\uDCDD Original", color = TextMuted, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 Text(phrase.korean, color = TextWhite, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
             }
 
